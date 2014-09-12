@@ -19,14 +19,16 @@ while (<>) {
 }
 
 local $/;
-local @ARGV = 'pta.json';
+local @ARGV = 'foo.csv';
 my $html = <>;
 use Encode;
 Encode::_utf8_on($html);
+$Map{"\cM"} = '';
+$html = join '', map { $Map{$_} // $_ } split(//, $html);
 $html =~ s<"T":"\K([^"]*)><
     my $x = $1;
     $x =~ s/%([0-9A-Fa-f]{2})/chr(hex($1))/eg;
     $x = Encode::decode_utf8($x);
     join '', map { $Map{$_} // $_ } split(//, $x);
->eg;
+>eg if 0;
 print $html;
